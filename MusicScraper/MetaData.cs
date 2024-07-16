@@ -15,7 +15,7 @@ namespace MusicScraper
 		}
 		public override string ToString()
 		{
-			return $"Title: {Title}, Artist: {Artist}, Album: {Album}, Year: {Year}, ";
+			return $"Title: {Title}, Artist: {Artist}, Album: {Album}, Year: {Year}";
 		}
 	}
 }
