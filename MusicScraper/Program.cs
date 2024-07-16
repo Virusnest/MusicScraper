@@ -6,15 +6,39 @@ using System;
 class Program
 {
 	public static SpotifyClient? client;
+	public static string? secret;
+	public static string? id;
+
+
 	static void Main(string[] args)
 	{
-
+		LoadENV(".env");
+		secret = Environment.GetEnvironmentVariable("SPOT_CLIENT_SECRET");
+		id = Environment.GetEnvironmentVariable("SPOT_CLIENT_ID");
 		Connect();
 		string? query = Console.ReadLine();
 		Console.WriteLine(Search(PreProcessString(query)).Result);
 		Console.Read();
 		
 	}
+
+	public static void LoadENV(string filePath)
+	{
+		if (!File.Exists(filePath))
+			return;
+
+		foreach (var line in File.ReadAllLines(filePath)) {
+			var parts = line.Split(
+				'=',
+				StringSplitOptions.RemoveEmptyEntries);
+
+			if (parts.Length != 2)
+				continue;
+
+			Environment.SetEnvironmentVariable(parts[0], parts[1]);
+		}
+	}
+
 	public static string PreProcessString(string input)
 	{
 		return input.Remove(input.LastIndexOf(".mp3"));
@@ -22,9 +46,10 @@ class Program
 	static void Connect()
 	{
 
+
 		var config = SpotifyClientConfig.CreateDefault();
 
-		var request = new ClientCredentialsRequest("803aa0f3be4c486f8978e42452c0d2a0", "b9fba9ee5cd042549ee801b3603b7f30");
+		var request = new ClientCredentialsRequest(id, secret);
 		var response = new OAuthClient(config).RequestToken(request);
 
 		client = new SpotifyClient(config.WithToken(response.Result.AccessToken));
