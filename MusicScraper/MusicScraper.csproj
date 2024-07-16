@@ -11,4 +11,8 @@
     <PackageReference Include="SpotifyAPI.Web" Version="7.1.1" />
     <PackageReference Include="SpotifyAPI.Web.Auth" Version="7.1.1" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\net6.0\.env" />
+    <None Include="obj\Debug\net6.0\.env" />
+  </ItemGroup>
 </Project>
