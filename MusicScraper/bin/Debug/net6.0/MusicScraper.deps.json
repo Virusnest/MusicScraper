@@ -8,8 +8,11 @@
     ".NETCoreApp,Version=v6.0": {
       "MusicScraper/1.0.0": {
         "dependencies": {
+          "FuzzySharp": "2.0.2",
           "SpotifyAPI.Web": "7.1.1",
-          "SpotifyAPI.Web.Auth": "7.1.1"
+          "SpotifyAPI.Web.Auth": "7.1.1",
+          "TagLibSharp": "2.3.0",
+          "YouTubeMusicAPI": "1.1.4"
         },
         "runtime": {
           "MusicScraper.dll": {}
@@ -23,6 +26,33 @@
           "lib/netstandard2.0/EmbedIO.dll": {
             "assemblyVersion": "3.5.2.0",
             "fileVersion": "3.5.2.0"
+          }
+        }
+      },
+      "FuzzySharp/2.0.2": {
+        "runtime": {
+          "lib/netcoreapp2.1/FuzzySharp.dll": {
+            "assemblyVersion": "1.0.4.0",
+            "fileVersion": "1.0.4.0"
+          }
+        }
+      },
+      "Microsoft.Extensions.DependencyInjection.Abstractions/8.0.1": {
+        "runtime": {
+          "lib/net6.0/Microsoft.Extensions.DependencyInjection.Abstractions.dll": {
+            "assemblyVersion": "8.0.0.0",
+            "fileVersion": "8.0.324.11423"
+          }
+        }
+      },
+      "Microsoft.Extensions.Logging.Abstractions/8.0.1": {
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.1"
+        },
+        "runtime": {
+          "lib/net6.0/Microsoft.Extensions.Logging.Abstractions.dll": {
+            "assemblyVersion": "8.0.0.0",
+            "fileVersion": "8.0.324.11423"
           }
         }
       },
@@ -58,6 +88,14 @@
         }
       },
       "System.ValueTuple/4.5.0": {},
+      "TagLibSharp/2.3.0": {
+        "runtime": {
+          "lib/netstandard2.0/TagLibSharp.dll": {
+            "assemblyVersion": "2.3.0.0",
+            "fileVersion": "2.3.0.0"
+          }
+        }
+      },
       "Unosquare.Swan.Lite/3.1.0": {
         "dependencies": {
           "System.ValueTuple": "4.5.0"
@@ -66,6 +104,18 @@
           "lib/netstandard2.0/Swan.Lite.dll": {
             "assemblyVersion": "3.1.0.0",
             "fileVersion": "3.1.0.0"
+          }
+        }
+      },
+      "YouTubeMusicAPI/1.1.4": {
+        "dependencies": {
+          "Microsoft.Extensions.Logging.Abstractions": "8.0.1",
+          "Newtonsoft.Json": "13.0.3"
+        },
+        "runtime": {
+          "lib/netstandard2.0/YouTubeMusicAPI.dll": {
+            "assemblyVersion": "1.1.4.0",
+            "fileVersion": "1.1.4.0"
           }
         }
       }
@@ -83,6 +133,27 @@
       "sha512": "sha512-YU4j+3XvuO8/VPkNf7KWOF1TpMhnyVhXnPsG1mvnDhTJ9D5BZOFXVDvCpE/SkQ1AJ0Aa+dXOVSW3ntgmLL7aJg==",
       "path": "embedio/3.5.2",
       "hashPath": "embedio.3.5.2.nupkg.sha512"
+    },
+    "FuzzySharp/2.0.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-sBKqWxw3g//peYxDZ8JipRlyPbIyBtgzqBVA5GqwHVeqtIrw75maGXAllztf+1aJhchD+drcQIgf2mFho8ZV8A==",
+      "path": "fuzzysharp/2.0.2",
+      "hashPath": "fuzzysharp.2.0.2.nupkg.sha512"
+    },
+    "Microsoft.Extensions.DependencyInjection.Abstractions/8.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-fGLiCRLMYd00JYpClraLjJTNKLmMJPnqxMaiRzEBIIvevlzxz33mXy39Lkd48hu1G+N21S7QpaO5ZzKsI6FRuA==",
+      "path": "microsoft.extensions.dependencyinjection.abstractions/8.0.1",
+      "hashPath": "microsoft.extensions.dependencyinjection.abstractions.8.0.1.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Logging.Abstractions/8.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-RIFgaqoaINxkM2KTOw72dmilDmTrYA0ns2KW4lDz4gZ2+o6IQ894CzmdL3StM2oh7QQq44nCWiqKqc4qUI9Jmg==",
+      "path": "microsoft.extensions.logging.abstractions/8.0.1",
+      "hashPath": "microsoft.extensions.logging.abstractions.8.0.1.nupkg.sha512"
     },
     "Newtonsoft.Json/13.0.3": {
       "type": "package",
@@ -112,12 +183,26 @@
       "path": "system.valuetuple/4.5.0",
       "hashPath": "system.valuetuple.4.5.0.nupkg.sha512"
     },
+    "TagLibSharp/2.3.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Qo4z6ZjnIfbR3Us1Za5M2vQ97OWZPmODvVmepxZ8XW0UIVLGdO2T63/N3b23kCcyiwuIe0TQvMEQG8wUCCD1mA==",
+      "path": "taglibsharp/2.3.0",
+      "hashPath": "taglibsharp.2.3.0.nupkg.sha512"
+    },
     "Unosquare.Swan.Lite/3.1.0": {
       "type": "package",
       "serviceable": true,
       "sha512": "sha512-X3s5QE/KMj3WAPFqFve7St+Ds10BB50u8kW8PmKIn7FVkn7yEXe9Yxr2htt1WV85DRqfFR0MN/BUNHkGHtL4OQ==",
       "path": "unosquare.swan.lite/3.1.0",
       "hashPath": "unosquare.swan.lite.3.1.0.nupkg.sha512"
+    },
+    "YouTubeMusicAPI/1.1.4": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-aqV0yJ2IbRnBGo1fzKhLIXuFyXE1fbr6GSjv61Rj9ny3H8Q7my/2604MW7M1qkwBtx4wARO7o8IXTiOCsulLTg==",
+      "path": "youtubemusicapi/1.1.4",
+      "hashPath": "youtubemusicapi.1.1.4.nupkg.sha512"
     }
   }
 }

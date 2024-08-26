@@ -1,27 +1,46 @@
 ﻿// See https://aka.ms/new-console-template for more information
+using System.Collections.Concurrent;
+using System.Text.RegularExpressions;
+using FuzzySharp;
 using MusicScraper;
 using SpotifyAPI.Web;
-using SpotifyAPI.Web.Auth;
-using System;
 class Program
 {
-	public static SpotifyClient? client;
-	public static string? secret;
-	public static string? id;
-
-
+	public static string? ssecret;
+	public static string? sid;
+	static ManualResetEvent reset = new ManualResetEvent(false);
+	public static Scraper scraper;
+	private static Queue<string> paths = new Queue<string>();
 	static void Main(string[] args)
 	{
 		LoadENV(".env");
-		secret = Environment.GetEnvironmentVariable("SPOT_CLIENT_SECRET");
-		id = Environment.GetEnvironmentVariable("SPOT_CLIENT_ID");
-		Connect();
-		string? query = Console.ReadLine();
-		Console.WriteLine(Search(PreProcessString(query)).Result);
-		Console.Read();
-		
+		ssecret = Environment.GetEnvironmentVariable("SPOT_CLIENT_SECRET");
+		sid = Environment.GetEnvironmentVariable("SPOT_CLIENT_ID");
+		string query="";
+		if(args.Length==0){
+			Console.WriteLine("Please enter a Path");
+			while(!Directory.Exists(query)){
+				query=Console.ReadLine();
+			}
+		}else{
+			query=args[0];
+		}
+		scraper = new Scraper(a=>Connect(a));
+		Console.WriteLine(query);
+		scraper.GetFiles(query);
+		foreach(var path in scraper.Files){
+			paths.Enqueue(path);
+			Console.WriteLine(path);
+		}
+		BeginScrape();
+		reset.WaitOne();
 	}
-
+	public static async void BeginScrape()
+	{
+		await scraper.Scrape(paths).ContinueWith(a => {
+			reset.Set();
+		});
+	}
 	public static void LoadENV(string filePath)
 	{
 		if (!File.Exists(filePath))
@@ -41,55 +60,16 @@ class Program
 
 	public static string PreProcessString(string input)
 	{
-		return input.Remove(input.LastIndexOf(".mp3"));
+		if (input.Contains(".mp3"))
+			input = input.Remove(input.LastIndexOf(".mp3"));
+		//magic regex garbage that seperates normal charactures from special chars
+		string[] output = Regex.Matches(input, @"[\p{L}\p{N}]+").Cast<Match>().Select(x => x.Value).ToArray();
+		//recombine into clean string
+		return string.Join(" ", output);
 	}
-	static void Connect()
+	static void Connect((Spotify,YTMusic) apis)
 	{
-
-
-		var config = SpotifyClientConfig.CreateDefault();
-
-		var request = new ClientCredentialsRequest(id, secret);
-		var response = new OAuthClient(config).RequestToken(request);
-
-		client = new SpotifyClient(config.WithToken(response.Result.AccessToken));
-		
-	
+		apis.Item1.Login(ssecret,sid);
+		apis.Item2.Login("","");
 	}
-	public async static Task<MetaData> Search(string query)
-	{
-		var data = new MetaData();
-		if (client == null) { return data; }
-		SearchRequest trackSearch = new SearchRequest(SearchRequest.Types.Track, query);
-		SearchRequest artistSearch = new SearchRequest(SearchRequest.Types.Track, query);
-		var trackResponce = await client.Search.Item(trackSearch);
-		var artistResponce = await client.Search.Item(trackSearch);
-		//Console.WriteLine(ConfidenceRate(query, trackResponce.Tracks.Items.ToArray(), artistResponce.Artists.Items.ToArray()));
-		//if (ConfidenceRate(query, trackResponce.Tracks.Items.ToArray(), artistResponce.Artists.Items.ToArray()) > 0) {
-			if (trackResponce.Tracks.Items != null) {
-				data.Title = trackResponce.Tracks.Items[0].Name;
-				data.Artist = trackResponce.Tracks.Items[0].Artists[0].Name;
-				data.Album = trackResponce.Tracks.Items[0].Album.Name;
-				data.Year = Convert.ToInt32(trackResponce.Tracks.Items[0].Album.ReleaseDate.Remove(4));
-			}
-		//}
-		return data;
-	}
-
-	public static int ConfidenceRate(string query, FullTrack[] tracks, FullArtist[] artists,int atempt)
-	{
-		int condfidence=0;
-		var artistAsplit = artists[atempt].Name.ToLower().Split(" ");
-		var artistBsplit = tracks[atempt].Artists[0].Name.ToLower().Split(" ");
-		var trackSplit = tracks[atempt].Name.ToLower().Split("");
-		foreach(string check in artistAsplit) {
-			
-		}
-		if (query.Contains(tracks[atempt].Artists[atempt].Name)) condfidence++;
-		if (query.ToLower().Replace(" ", "").Contains(artists[atempt].Name.ToLower().Replace(" ",""))) condfidence++;
-		if (query.Contains(tracks[atempt].Name)) condfidence++;
-		return condfidence;
-	}
-	
-
 }

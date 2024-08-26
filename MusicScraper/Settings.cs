@@ -6,8 +6,7 @@ namespace MusicScraper
 		public static bool AgressiveCleaning = false;
 		public static bool ConfidenceChecks = true;
 		public static bool UseExistingMetaData = true;
-
-
 	}
+	
 }
 

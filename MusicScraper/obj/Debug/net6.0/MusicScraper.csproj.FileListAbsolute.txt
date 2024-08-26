@@ -10,7 +10,6 @@
 /Users/25kmaloney/Projects/MusicScraper/MusicScraper/obj/Debug/net6.0/MusicScraper.AssemblyInfoInputs.cache
 /Users/25kmaloney/Projects/MusicScraper/MusicScraper/obj/Debug/net6.0/MusicScraper.AssemblyInfo.cs
 /Users/25kmaloney/Projects/MusicScraper/MusicScraper/obj/Debug/net6.0/MusicScraper.csproj.CoreCompileInputs.cache
-/Users/25kmaloney/Projects/MusicScraper/MusicScraper/obj/Debug/net6.0/MusicScraper.csproj.CopyComplete
 /Users/25kmaloney/Projects/MusicScraper/MusicScraper/obj/Debug/net6.0/MusicScraper.dll
 /Users/25kmaloney/Projects/MusicScraper/MusicScraper/obj/Debug/net6.0/refint/MusicScraper.dll
 /Users/25kmaloney/Projects/MusicScraper/MusicScraper/obj/Debug/net6.0/MusicScraper.pdb
@@ -19,3 +18,10 @@
 /Users/25kmaloney/Projects/MusicScraper/MusicScraper/bin/Debug/net6.0/EmbedIO.dll
 /Users/25kmaloney/Projects/MusicScraper/MusicScraper/bin/Debug/net6.0/SpotifyAPI.Web.Auth.dll
 /Users/25kmaloney/Projects/MusicScraper/MusicScraper/bin/Debug/net6.0/Swan.Lite.dll
+/Users/25kmaloney/Projects/MusicScraper/MusicScraper/bin/Debug/net6.0/FuzzySharp.dll
+/Users/25kmaloney/Projects/MusicScraper/MusicScraper/bin/Debug/net6.0/Microsoft.Extensions.DependencyInjection.Abstractions.dll
+/Users/25kmaloney/Projects/MusicScraper/MusicScraper/bin/Debug/net6.0/Microsoft.Extensions.Logging.Abstractions.dll
+/Users/25kmaloney/Projects/MusicScraper/MusicScraper/bin/Debug/net6.0/YouTubeMusicAPI.dll
+/Users/25kmaloney/Projects/MusicScraper/MusicScraper/bin/Debug/net6.0/TagLibSharp.dll
+/Users/25kmaloney/Projects/MusicScraper/MusicScraper/obj/Debug/net6.0/MusicScraper.sourcelink.json
+/Users/25kmaloney/Projects/MusicScraper/MusicScraper/obj/Debug/net6.0/MusicScr.9E52A712.Up2Date
