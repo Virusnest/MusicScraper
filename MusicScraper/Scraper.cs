@@ -3,6 +3,9 @@ using System.Collections.Concurrent;
 
 namespace MusicScraper;
 
+/// <summary>
+/// Scraper class for scraping metadata from web APIs
+/// </summary>
 public class Scraper
 {
     public List<string> Files = new List<string>();
@@ -14,8 +17,11 @@ public class Scraper
     public Scraper(Action<(Spotify,YTMusic)> connect){   
         connect((spotify,youtube));
     }
+    /// <summary>
+    /// Recursivly all files in a directory and its subdirectories and add them to the Files list
+    /// </summary>
+    /// <param name="path"></param>
     public void GetFiles(string path){
-
         foreach (var asset in Directory.GetFiles(path,"*.mp3")){
             Console.WriteLine(asset);
             
@@ -25,7 +31,11 @@ public class Scraper
             GetFiles(asset);
         }
     }
-
+    /// <summary>
+    /// Writes Metadata to a file
+    /// </summary>
+    /// <param name="path"></param>
+    /// <param name="data"></param>
     public void WriteMetadata (string path, MetaData data){
         var wawa = TagLib.File.Create(path);
         wawa.Tag.Album=data.Album;
@@ -34,6 +44,11 @@ public class Scraper
         wawa.Tag.Year=(uint)data.Year;
     }
 
+    /// <summary>
+    /// Scrape metadata from the web
+    /// </summary>
+    /// <param name="paths"></param>
+    /// <returns></returns>
     public async Task Scrape(Queue<string> paths)
 	{
 		List<Task> tasks = new List<Task>();
@@ -52,7 +67,7 @@ public class Scraper
             tasks.Remove(finishedTask);
 
             // Process the results
-			while (queue.TryDequeue(out MetaData? data)){
+			while (queue.TryDequeue(out MetaData data)){
 				Console.WriteLine(data.ToString());
 			}
         }

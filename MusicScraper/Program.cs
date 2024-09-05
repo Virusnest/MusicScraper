@@ -10,6 +10,7 @@ class Program
 	public static string? sid;
 	static ManualResetEvent reset = new ManualResetEvent(false);
 	public static Scraper scraper;
+	public static DirectoryStructure structure;
 	private static Queue<string> paths = new Queue<string>();
 	static void Main(string[] args)
 	{
@@ -26,14 +27,18 @@ class Program
 			query=args[0];
 		}
 		scraper = new Scraper(a=>Connect(a));
+		structure = new DirectoryStructure();
+		structure.GetFiles(query);
+		structure.ResoloveMetaData();
+		structure.BuildStructure(query);
 		Console.WriteLine(query);
-		scraper.GetFiles(query);
+		//scraper.GetFiles(query);
 		foreach(var path in scraper.Files){
 			paths.Enqueue(path);
 			Console.WriteLine(path);
 		}
-		BeginScrape();
-		reset.WaitOne();
+		//BeginScrape();
+		///Ureset.WaitOne();
 	}
 	public static async void BeginScrape()
 	{

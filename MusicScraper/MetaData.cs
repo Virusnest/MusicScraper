@@ -2,7 +2,10 @@
 using YouTubeMusicAPI.Models;
 namespace MusicScraper
 {
-	public class MetaData
+	/// <summary>
+	/// Simplified MetaData struct for storing metadata
+	/// </summary>
+	public struct MetaData
 	{
 		public string Title, Album;
 		public string[] Artists;
