@@ -12,7 +12,7 @@ public class Scraper
     public Spotify spotify = new Spotify();
 	public YTMusic youtube = new YTMusic();
 
-	private ConcurrentQueue<MetaData> queue = new ConcurrentQueue<MetaData>();
+	private ConcurrentQueue<QueryData> queue = new ConcurrentQueue<QueryData>();
 
     public Scraper(Action<(Spotify,YTMusic)> connect){   
         connect((spotify,youtube));
@@ -45,6 +45,61 @@ public class Scraper
     }
 
     /// <summary>
+    /// Serve a UI to the user to confirm metadata
+    /// </summary>
+    /// <param name="file"></param>
+    /// <param name="data"></param>
+    /// <param name="confidence"></param>
+    /// 
+    public struct QueryData{
+        public QueryData(MetaData sdata, MetaData ytData, string path, string query){
+            SpotData = sdata;
+            YTData = ytData;
+            Path = path;
+            Query = query;
+        }
+
+        public MetaData SpotData;
+        public MetaData YTData;
+
+        public string Path;
+        public string Query;
+    }
+	public void ServeConfidinceUI(ref QueryData data){
+		Console.WriteLine("Unsure about the following file: " + data.Path);
+		Console.WriteLine("Title: " + data.SpotData.Title);
+		Console.WriteLine("Artist: " + string.Join(", ", data.SpotData.Artists));
+		Console.WriteLine("Album: " + data.SpotData.Album);
+		Console.WriteLine("Year: " + data.SpotData.Year);
+		Console.WriteLine("Confidence: " + data.SpotData.Compare(data.YTData));	
+		Console.WriteLine("Would you like to change the metadata? (y/n)");
+		int response = Console.Read();
+        bool confirm = false;
+        while(!confirm){		if(response == 'y'){
+			Console.WriteLine("Enter the new Title: ");
+			string ?title = Console.ReadLine();
+			Console.WriteLine("Enter the new Artist(s): ");
+			string ?artist = Console.ReadLine();
+			Console.WriteLine("Enter the new Album: ");
+			string ?album = Console.ReadLine();
+			Console.WriteLine("Enter the new Year: ");
+			string ?year = Console.ReadLine();
+			if(title != null && artist != null && album != null && year != null){
+                data.SpotData = new MetaData(artist.Split(","), title, album, int.Parse(year));
+                Console.WriteLine("Are you sure you want to change the metadata? (y/n)");
+                response = Console.Read();
+                if(response == 'y'){
+                    confirm = true;
+                }
+			}
+		}}
+        WriteMetadata(data.Path, data.SpotData);
+
+	}
+
+
+
+    /// <summary>
     /// Scrape metadata from the web
     /// </summary>
     /// <param name="paths"></param>
@@ -67,8 +122,9 @@ public class Scraper
             tasks.Remove(finishedTask);
 
             // Process the results
-			while (queue.TryDequeue(out MetaData data)){
+			while (queue.TryDequeue(out QueryData data)){
 				Console.WriteLine(data.ToString());
+                ServeConfidinceUI(ref data);
 			}
         }
         await Task.WhenAll(tasks);
@@ -77,9 +133,7 @@ public class Scraper
 	public async Task Search(string query){
 		MetaData spot = await spotify.Search(query);
 		MetaData yt = await youtube.Search(query);
-		if (spot.Compare(yt)>0.4){
-			queue.Enqueue(spot);
-		}
+        queue.Enqueue(new QueryData(spot,yt, query, "Spotify"));
 	}
 
 

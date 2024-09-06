@@ -8,7 +8,6 @@ namespace MusicScraper;
     /// </summary>
 public class DirectoryStructure
 {
-
     public string Layout { get; set; }
     public List<(MetaData,string)> Entries { get; set; }
 

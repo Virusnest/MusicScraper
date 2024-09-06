@@ -22,6 +22,11 @@ namespace MusicScraper
 		{
 			return $"Title: {Title}, Artist: {string.Join(", ",Artists)}, Album: {Album}, Year: {Year}";
 		}
+		/// <summary>
+		/// Compare two MetaData objects
+		/// </summary>
+		/// <param name="data"></param>
+		/// <returns></returns>
 		public float Compare(MetaData data)
 		{
 			int total = 0;

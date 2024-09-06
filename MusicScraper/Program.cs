@@ -1,9 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
-using System.Collections.Concurrent;
 using System.Text.RegularExpressions;
-using FuzzySharp;
 using MusicScraper;
-using SpotifyAPI.Web;
 class Program
 {
 	public static string? ssecret;
@@ -46,6 +43,7 @@ class Program
 			reset.Set();
 		});
 	}
+
 	public static void LoadENV(string filePath)
 	{
 		if (!File.Exists(filePath))
