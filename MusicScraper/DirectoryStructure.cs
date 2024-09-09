@@ -3,13 +3,13 @@ using System.Text;
 using TagLib;
 
 namespace MusicScraper;
-    /// <summary>
-    /// Used for Building the directory structure for the files
-    /// </summary>
+/// <summary>
+/// Used for Building the directory structure for the files
+/// </summary>
 public class DirectoryStructure
 {
     public string Layout { get; set; }
-    public List<(MetaData,string)> Entries { get; set; }
+    public List<(MetaData, string)> Entries { get; set; }
 
     public List<string> Paths;
 
@@ -25,14 +25,17 @@ public class DirectoryStructure
     /// Recursively get all files in a directory and its subdirectories then write them to the Paths list
     /// </summary>
     /// <param name="path"></param>
-    public void GetFiles(string path){
+    public void GetFiles(string path)
+    {
 
-        foreach (var asset in Directory.GetFiles(path,"*.mp3")){
+        foreach (var asset in Directory.GetFiles(path, "*.mp3"))
+        {
             Console.WriteLine(asset);
-            
+
             Paths.Add(asset);
         }
-        foreach (var asset in Directory.GetDirectories(path)){
+        foreach (var asset in Directory.GetDirectories(path))
+        {
             GetFiles(asset);
         }
     }
@@ -45,42 +48,54 @@ public class DirectoryStructure
             Entries.Add((new MetaData(data.Tag.AlbumArtists, data.Tag.Title, data.Tag.Album, (int)data.Tag.Year), path));
         }
     }
-/// <summary>
-/// Generate the directory structure for a file
-/// </summary>
-/// <param name="file"></param>
-/// <returns></returns>
-    private string GenerateLayoutForFile(TagLib.File file){
+    /// <summary>
+    /// Generate the directory structure for a file
+    /// </summary>
+    /// <param name="file"></param>
+    /// <returns></returns>
+    private string GenerateLayoutForFile(TagLib.File file)
+    {
         Stack<char> text = new Stack<char>();
         StringBuilder builder = new StringBuilder();
-        var c=GenerateStreamFromString(Layout);
+        var c = GenerateStreamFromString(Layout);
         Stack<char> num = new Stack<char>();
-        while(c.Position<Layout.Length){
+        while (c.Position < Layout.Length)
+        {
             char h = (char)c.ReadByte();
-            if (h== '{'){
+            if (h == '{')
+            {
                 char ch;
-                while ((ch = (char)c.ReadByte()) != '}'){
-                    if(ch=='['){
+                while ((ch = (char)c.ReadByte()) != '}')
+                {
+                    if (ch == '[')
+                    {
                         char chch;
-                        while ((chch=(char)c.ReadByte()) != ']'){
+                        while ((chch = (char)c.ReadByte()) != ']')
+                        {
                             num.Push(chch);
                         }
-                    }else{
+                    }
+                    else
+                    {
                         text.Push(ch);
                     }
                 }
-                if (num.Count>0){
-                    builder.Append(ParseType(Reverse(new string( text.ToArray())),file)[Convert.ToInt32(new string(num.ToArray()))]);
-                }else{
-                    builder.Append(ParseType(Reverse(new string( text.ToArray())),file));
+                if (num.Count > 0)
+                {
+                    builder.Append(ParseType(Reverse(new string(text.ToArray())), file)[Convert.ToInt32(new string(num.ToArray()))]);
+                }
+                else
+                {
+                    builder.Append(ParseType(Reverse(new string(text.ToArray())), file));
                 }
                 num.Clear();
                 text.Clear();
             }
-            if (h!='{'){
+            if (h != '{')
+            {
                 builder.Append(h);
             }
-            
+
         }
         return builder.ToString();
     }
@@ -108,7 +123,7 @@ public class DirectoryStructure
     /// <param name="s"></param>
     /// <returns></returns>
 
-    public static string Reverse( string s )
+    public static string Reverse(string s)
     {
         char[] charArray = s.ToCharArray();
         Array.Reverse(charArray);
@@ -122,39 +137,66 @@ public class DirectoryStructure
     /// <param name="file"></param>
     /// <returns></returns>
 
-    private string ParseType(string type, TagLib.File file){
-        if(file.Tag.IsEmpty){
+    private string ParseType(string type, TagLib.File file)
+    {
+        if (file.Tag.IsEmpty)
+        {
             return "UNKNOWN";
         }
-        switch(type){
+        switch (type)
+        {
             case "Artist":
-            if (file.Tag.Performers.Length==0){break;}
+                if (file.Tag.Performers.Length == 0) { break; }
                 return
                 StripInvalidChars(file.Tag.Performers.First());
             case "Album":
-                if (file.Tag.Album==null){break;}
+                if (file.Tag.Album == null) { break; }
                 return
                 StripInvalidChars(file.Tag.Album);
             case "Title":
-                if (file.Tag.Title==null){break;}
+                if (file.Tag.Title == null) { break; }
                 return
                 StripInvalidChars(file.Tag.Title);
             case "Year":
                 return
                 StripInvalidChars(file.Tag.Year.ToString());
             case "ext":
-                if (file.Name==null){break;}
+                if (file.Name == null) { break; }
                 return
                 StripInvalidChars(Path.GetExtension(file.Name));
         }
         return "UNKNOWN";
     }
-    public void BuildStructure(string path){
+    public void BuildStructure()
+    {
+        string? path;
+        Console.WriteLine("Where would you like to save the files?");
+        while (true)
+        {
+            if (Directory.Exists(path = Console.ReadLine()))
+            {
+
+                break;
+            }
+            Console.WriteLine("Invalid Path");
+        }
+
         // Create the directory structure with the layout string dynamicly
-        foreach (var entry in Entries){
+        foreach (var entry in Entries)
+        {
             var newPath = GenerateLayoutForFile(TagLib.File.Create(entry.Item2));
             newPath = Path.Combine(path, newPath);
             Console.WriteLine(newPath);
+            var patha = Path.GetDirectoryName(newPath);
+            Directory.CreateDirectory(patha);
+            try
+            {
+                System.IO.File.Copy(entry.Item2, Path.Combine(patha, Path.GetFileName(entry.Item2)));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
         }
 
     }
@@ -165,5 +207,5 @@ public class DirectoryStructure
     }
 
 
-    
+
 }

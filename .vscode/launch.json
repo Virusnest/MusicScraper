@@ -1,27 +1,23 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
         {
-
             "name": "My debug config",
-
             "type": "coreclr",
             "request": "launch",
             "envFile": "${workspaceFolder}/${workspaceFolderBasename}/.env",
-
             "program": "${workspaceFolder}/${workspaceFolderBasename}/bin/Debug/net6.0/${workspaceFolderBasename}",
-
-            "args": ["/Users/25kmaloney/Music/"],
-
+            "args": [
+                "/Users/25kmaloney/Music/"
+            ],
             "cwd": "${workspaceFolder}",
-
             "console": "internalConsole",
-
             "stopAtEntry": false
-
+        },
+        {
+            "name": "C#: Launch Startup Project",
+            "type": "dotnet",
+            "request": "launch"
         }
     ]
 }

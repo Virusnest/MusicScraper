@@ -14,32 +14,68 @@ class Program
 		LoadENV(".env");
 		ssecret = Environment.GetEnvironmentVariable("SPOT_CLIENT_SECRET");
 		sid = Environment.GetEnvironmentVariable("SPOT_CLIENT_ID");
-		string query="";
-		if(args.Length==0){
-			Console.WriteLine("Please enter a Path");
-			while(!Directory.Exists(query)){
-				query=Console.ReadLine();
+		string query = "";
+		if (args.Length == 0)
+		{
+			Console.WriteLine("What Would you like to do?");
+			Console.WriteLine("1. Scrape Music");
+			Console.WriteLine("2. Build A Libary Folder");
+			bool response = false;
+			while (!response)
+			{
+				switch (Console.Read())
+				{
+					case '1':
+						Console.WriteLine("Enter the query you would like to search for: ");
+						query = Console.ReadLine();
+						response = true;
+						query = RequestPath();
+						scraper = new Scraper(a => Connect(a));
+						scraper.GetFiles(query);
+						foreach (var path in scraper.Files)
+						{
+							paths.Enqueue(path);
+							Console.WriteLine(path);
+						}
+						BeginScrape();
+						reset.WaitOne();
+						break;
+					case '2':
+						Console.WriteLine("Enter the query you would like to search for: ");
+						query = Console.ReadLine();
+						response = true;
+						query = RequestPath();
+						structure = new DirectoryStructure();
+						structure.GetFiles(query);
+						structure.ResoloveMetaData();
+						structure.BuildStructure();
+						break;
+				}
+				Console.WriteLine("Invalid Input");
+
 			}
-		}else{
-			query=args[0];
+
 		}
-		scraper = new Scraper(a=>Connect(a));
-		structure = new DirectoryStructure();
-		structure.GetFiles(query);
-		structure.ResoloveMetaData();
-		structure.BuildStructure(query);
-		Console.WriteLine(query);
-		//scraper.GetFiles(query);
-		foreach(var path in scraper.Files){
-			paths.Enqueue(path);
-			Console.WriteLine(path);
+		else
+		{
+			query = args[0];
 		}
-		//BeginScrape();
-		///Ureset.WaitOne();
+	}
+
+	public static string RequestPath()
+	{
+		Console.WriteLine("Enter the path you would like to search for: ");
+		string? path;
+		while (!Directory.Exists(path = Console.ReadLine()))
+		{
+			Console.WriteLine("Invalid Path");
+		}
+		return path;
 	}
 	public static async void BeginScrape()
 	{
-		await scraper.Scrape(paths).ContinueWith(a => {
+		await scraper.Scrape(paths).ContinueWith(a =>
+		{
 			reset.Set();
 		});
 	}
@@ -49,7 +85,8 @@ class Program
 		if (!File.Exists(filePath))
 			return;
 
-		foreach (var line in File.ReadAllLines(filePath)) {
+		foreach (var line in File.ReadAllLines(filePath))
+		{
 			var parts = line.Split(
 				'=',
 				StringSplitOptions.RemoveEmptyEntries);
@@ -70,9 +107,9 @@ class Program
 		//recombine into clean string
 		return string.Join(" ", output);
 	}
-	static void Connect((Spotify,YTMusic) apis)
+	static void Connect((Spotify, YTMusic) apis)
 	{
-		apis.Item1.Login(ssecret,sid);
-		apis.Item2.Login("","");
+		apis.Item1.Login(ssecret, sid);
+		apis.Item2.Login("", "");
 	}
 }
