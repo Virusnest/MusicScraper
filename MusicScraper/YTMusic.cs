@@ -3,7 +3,7 @@ using YouTubeMusicAPI.Models;
 
 namespace MusicScraper
 {
-	public class YTMusic : MusicAPI
+	public class YTMusic : IMusicAPI
 	{
 		public YouTubeMusicClient ?Client;
 

@@ -48,14 +48,6 @@ public class Scraper
         wawa.Tag.Title = data.Title;
         wawa.Tag.Year = (uint)data.Year;
     }
-
-    /// <summary>
-    /// Serve a UI to the user to confirm metadata
-    /// </summary>
-    /// <param name="file"></param>
-    /// <param name="data"></param>
-    /// <param name="confidence"></param>
-    /// 
     public struct QueryData
     {
         public QueryData(MetaData sdata, MetaData ytData, string path, string query)
@@ -72,6 +64,10 @@ public class Scraper
         public string Path;
         public string Query;
     }
+    /// <summary>
+    /// Show the user a UI to confirm metadata
+    /// </summary>
+    /// <param name="data"></param>
     public void ServeConfidinceUI(ref QueryData data)
     {
         Console.WriteLine("Unsure about the following file: " + data.Path);
@@ -80,7 +76,7 @@ public class Scraper
         Console.WriteLine("Album: " + data.SpotData.Album);
         Console.WriteLine("Year: " + data.SpotData.Year);
         Console.WriteLine("Confidence: " + data.SpotData.Compare(data.YTData));
-        Console.WriteLine("Would you like to change the metadata? (y/n) or (s) to skip");
+        Console.WriteLine("(Y) to change metadata and write to file, (N) to keep and write to file, (S) to skip");
         while (true)
         {
             int response = Console.Read();
@@ -158,6 +154,10 @@ public class Scraper
         await Task.WhenAll(tasks);
 
     }
+    /// <summary>
+    /// asynchronously call the search function on the web APIs
+    /// </summary>
+    /// <param name="query"></param>
     public async Task Search(string query)
     {
         MetaData spot = await spotify.Search(query);

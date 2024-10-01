@@ -147,6 +147,14 @@ public class DirectoryStructure
         {
             case "Artist":
                 if (file.Tag.Performers.Length == 0) { break; }
+
+                if (file.Tag.Performers.Length == 1) {
+                    if (Settings.PreferMainArtist)
+                    {
+                        var split = file.Tag.Performers.First().Split(",");
+                        return StripInvalidChars(split[0].Trim());
+                    }
+                }
                 return
                 StripInvalidChars(file.Tag.Performers.First());
             case "Album":
@@ -167,6 +175,10 @@ public class DirectoryStructure
         }
         return "UNKNOWN";
     }
+    
+    /// <summary>
+    /// Build the directory structure
+    /// </summary>
     public void BuildStructure()
     {
         string? path;

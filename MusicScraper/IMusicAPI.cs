@@ -2,7 +2,7 @@ using System;
 
 namespace MusicScraper;
 
-public interface MusicAPI
+public interface IMusicAPI
 {
   public Task<MetaData> Search(string query);
 

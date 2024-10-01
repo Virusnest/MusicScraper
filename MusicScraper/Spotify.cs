@@ -3,7 +3,7 @@ using SpotifyAPI.Web;
 
 namespace MusicScraper
 {
-	public class Spotify : MusicAPI
+	public class Spotify : IMusicAPI
 	{
 		public SpotifyClient? Client;
 		public Spotify()

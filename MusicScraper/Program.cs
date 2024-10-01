@@ -3,29 +3,29 @@ using System.Text.RegularExpressions;
 using MusicScraper;
 class Program
 {
-	public static string? ssecret;
-	public static string? sid;
+
 	static ManualResetEvent reset = new ManualResetEvent(false);
 	public static Scraper scraper;
 	public static DirectoryStructure structure;
 	private static Queue<string> paths = new Queue<string>();
 	static void Main(string[] args)
 	{
-		LoadENV(".env");
-		ssecret = Environment.GetEnvironmentVariable("SPOT_CLIENT_SECRET");
-		sid = Environment.GetEnvironmentVariable("SPOT_CLIENT_ID");
+		Settings.LoadSettings();
+		
 		string query = "";
 		if (args.Length == 0)
 		{
 			Console.WriteLine("What Would you like to do?");
 			Console.WriteLine("1. Scrape Music");
 			Console.WriteLine("2. Build A Libary Folder");
+			Console.WriteLine("3. Edit Settings");
 			bool response = false;
 			while (!response)
 			{
-				switch (Console.Read())
+				switch (Console.ReadKey().KeyChar)
 				{
 					case '1':
+						Console.CursorLeft = 0;
 						Console.WriteLine("Enter the query you would like to search for: ");
 						query = Console.ReadLine();
 						response = true;
@@ -41,17 +41,24 @@ class Program
 						reset.WaitOne();
 						break;
 					case '2':
-						Console.WriteLine("Enter the query you would like to search for: ");
+						Console.CursorLeft = 0;
+						Console.WriteLine("Enter the Path of the files you would like to build a libary from: ");
 						query = Console.ReadLine();
 						response = true;
-						query = RequestPath();
-						structure = new DirectoryStructure();
+						structure = new DirectoryStructure(Settings.StructurePattern);
 						structure.GetFiles(query);
 						structure.ResoloveMetaData();
 						structure.BuildStructure();
 						break;
+					case '3':
+						Console.CursorLeft = 0;
+						Settings.ServeSettingsUI();
+						break;
+					default:
+						Console.WriteLine("Invalid Input");
+						break;
 				}
-				Console.WriteLine("Invalid Input");
+				Console.CursorLeft = 0;
 
 			}
 
@@ -79,25 +86,6 @@ class Program
 			reset.Set();
 		});
 	}
-
-	public static void LoadENV(string filePath)
-	{
-		if (!File.Exists(filePath))
-			return;
-
-		foreach (var line in File.ReadAllLines(filePath))
-		{
-			var parts = line.Split(
-				'=',
-				StringSplitOptions.RemoveEmptyEntries);
-
-			if (parts.Length != 2)
-				continue;
-
-			Environment.SetEnvironmentVariable(parts[0], parts[1]);
-		}
-	}
-
 	public static string PreProcessString(string input)
 	{
 		if (input.Contains(".mp3"))
@@ -109,7 +97,7 @@ class Program
 	}
 	static void Connect((Spotify, YTMusic) apis)
 	{
-		apis.Item1.Login(ssecret, sid);
+		apis.Item1.Login(Settings.SpotifyClientSecret, Settings.SpotifyClientID);
 		apis.Item2.Login("", "");
 	}
 }

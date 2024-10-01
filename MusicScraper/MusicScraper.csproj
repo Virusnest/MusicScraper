@@ -18,4 +18,7 @@
     <None Include="bin\Debug\net6.0\.env" />
     <None Include="obj\Debug\net6.0\.env" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\NVBS\NVBS\NVBS.csproj" />
+  </ItemGroup>
 </Project>
