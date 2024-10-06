@@ -28,7 +28,7 @@ public class Scraper
         {
             Console.WriteLine(asset);
 
-            Files.Add(Path.GetFileName(asset));
+            Files.Add((asset));
         }
         foreach (var asset in Directory.GetDirectories(path))
         {
@@ -79,7 +79,8 @@ public class Scraper
         Console.WriteLine("(Y) to change metadata and write to file, (N) to keep and write to file, (S) to skip");
         while (true)
         {
-            int response = Console.Read();
+            int response = Console.ReadKey().KeyChar;
+            Console.CursorLeft = 0;
             if (response == 'y')
             {
                 Console.WriteLine("Enter the new Title: ");
@@ -131,11 +132,14 @@ public class Scraper
     {
         List<Task> tasks = new List<Task>();
 
+// Queue all tasks
         while (paths.Count > 0)
         {
             string file = paths.Dequeue();
-            tasks.Add(Search(file));
+            tasks.Add(Search(Path.GetFileName(file),file));
         }
+
+// Continue processing while there are still tasks to complete
         while (tasks.Any())
         {
             // Wait for any task to complete
@@ -144,25 +148,37 @@ public class Scraper
             // Remove the completed task from the list
             tasks.Remove(finishedTask);
 
-            // Process the results
-            while (queue.TryDequeue(out QueryData data))
+            // Process available results from the queue (while waiting for others to complete)
+            QueryData data;
+            while (queue.TryDequeue(out data))
             {
                 Console.WriteLine(data.ToString());
-                ServeConfidinceUI(ref data);
+                ServeConfidinceUI(ref data); // Update the UI with the result
             }
         }
+
+// Ensure all remaining tasks are completed (if any are left in the background)
         await Task.WhenAll(tasks);
+
+// Process any remaining results that came in after the last task finished
+        while (queue.TryDequeue(out QueryData remainingData))
+        {
+            Console.WriteLine(remainingData.ToString());
+            ServeConfidinceUI(ref remainingData);
+        }
+
+
 
     }
     /// <summary>
     /// asynchronously call the search function on the web APIs
     /// </summary>
     /// <param name="query"></param>
-    public async Task Search(string query)
+    public async Task Search(string query,string path)
     {
         MetaData spot = await spotify.Search(query);
         MetaData yt = await youtube.Search(query);
-        queue.Enqueue(new QueryData(spot, yt, query, "Spotify"));
+        queue.Enqueue(new QueryData(spot, yt, path, "Spotify"));
     }
 
 

@@ -4,7 +4,7 @@ using MusicScraper;
 class Program
 {
 
-	static ManualResetEvent reset = new ManualResetEvent(false);
+	public static ManualResetEvent reset = new ManualResetEvent(false);
 	public static Scraper scraper;
 	public static DirectoryStructure structure;
 	private static Queue<string> paths = new Queue<string>();
@@ -39,6 +39,7 @@ class Program
 						}
 						BeginScrape();
 						reset.WaitOne();
+						
 						break;
 					case '2':
 						Console.CursorLeft = 0;
