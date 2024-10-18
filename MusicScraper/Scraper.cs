@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Concurrent;
+using TagLib;
 
 namespace MusicScraper;
 
@@ -47,6 +48,19 @@ public class Scraper
         wawa.Tag.AlbumArtists = data.Artists;
         wawa.Tag.Title = data.Title;
         wawa.Tag.Year = (uint)data.Year;
+        wawa.Tag.Track = (uint)data.TrackNo;
+
+        TagLib.Id3v2.AttachmentFrame cover = new TagLib.Id3v2.AttachmentFrame
+        {
+            Type = PictureType.FrontCover,
+            Description = "Cover",
+            MimeType = System.Net.Mime.MediaTypeNames.Image.Jpeg,
+            Data = data.Cover,
+            TextEncoding = StringType.UTF16
+
+        };
+        wawa.Tag.Pictures = new IPicture[] { cover };
+        wawa.Save();
     }
     public struct QueryData
     {
@@ -132,14 +146,14 @@ public class Scraper
     {
         List<Task> tasks = new List<Task>();
 
-// Queue all tasks
+        // Queue all tasks
         while (paths.Count > 0)
         {
             string file = paths.Dequeue();
-            tasks.Add(Search(Path.GetFileName(file),file));
+            tasks.Add(Search(Path.GetFileName(file), file));
         }
 
-// Continue processing while there are still tasks to complete
+        // Continue processing while there are still tasks to complete
         while (tasks.Any())
         {
             // Wait for any task to complete
@@ -157,10 +171,10 @@ public class Scraper
             }
         }
 
-// Ensure all remaining tasks are completed (if any are left in the background)
+        // Ensure all remaining tasks are completed (if any are left in the background)
         await Task.WhenAll(tasks);
 
-// Process any remaining results that came in after the last task finished
+        // Process any remaining results that came in after the last task finished
         while (queue.TryDequeue(out QueryData remainingData))
         {
             Console.WriteLine(remainingData.ToString());
@@ -174,7 +188,7 @@ public class Scraper
     /// asynchronously call the search function on the web APIs
     /// </summary>
     /// <param name="query"></param>
-    public async Task Search(string query,string path)
+    public async Task Search(string query, string path)
     {
         MetaData spot = await spotify.Search(query);
         MetaData yt = await youtube.Search(query);

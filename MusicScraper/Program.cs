@@ -11,7 +11,7 @@ class Program
 	static void Main(string[] args)
 	{
 		Settings.LoadSettings();
-		
+
 		string query = "";
 		if (args.Length == 0)
 		{
@@ -26,8 +26,6 @@ class Program
 				{
 					case '1':
 						Console.CursorLeft = 0;
-						Console.WriteLine("Enter the query you would like to search for: ");
-						query = Console.ReadLine();
 						response = true;
 						query = RequestPath();
 						scraper = new Scraper(a => Connect(a));
@@ -39,11 +37,11 @@ class Program
 						}
 						BeginScrape();
 						reset.WaitOne();
-						
+
 						break;
 					case '2':
 						Console.CursorLeft = 0;
-						Console.WriteLine("Enter the Path of the files you would like to build a libary from: ");
+						Console.WriteLine("Enter the FULL Path of the files you would like to build a libary from: ");
 						query = Console.ReadLine();
 						response = true;
 						structure = new DirectoryStructure(Settings.StructurePattern);
@@ -72,7 +70,7 @@ class Program
 
 	public static string RequestPath()
 	{
-		Console.WriteLine("Enter the path you would like to search for: ");
+		Console.WriteLine("Enter the FULL path you would like to scrape in: ");
 		string? path;
 		while (!Directory.Exists(path = Console.ReadLine()))
 		{

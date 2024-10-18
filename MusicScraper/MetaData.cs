@@ -10,17 +10,20 @@ namespace MusicScraper
 		public string Title, Album;
 		public string[] Artists;
 		public int Year;
+		public int TrackNo = 0;
+		public byte[] Cover;
 
-		public MetaData(string[] artist, string title="N/A", string album = "N/A", int year = 0)
+		public MetaData(string[] artist, string title = "N/A", string album = "N/A", int year = 0)
 		{
 			Title = title;
 			Artists = artist;
 			Album = album;
 			Year = year;
+			Cover = new byte[0];
 		}
 		public override string ToString()
 		{
-			return $"Title: {Title}, Artist: {string.Join(", ",Artists)}, Album: {Album}, Year: {Year}";
+			return $"Title: {Title}, Artist: {string.Join(", ", Artists)}, Album: {Album}, Year: {Year}";
 		}
 		/// <summary>
 		/// Compare two MetaData objects
@@ -33,14 +36,17 @@ namespace MusicScraper
 			if (stringCheck(Title.ToLower(), data.Title.ToLower())) total++;
 			if (Artists.Equals(data.Artists)) total++;
 			if (stringCheck(Album.ToLower(), data.Album.ToLower())) total++;
-			return total/2f;
+			return total / 2f;
 		}
 		private bool stringCheck(string a, string b)
 		{
 			if (a == b) return true;
-			if (a.Length>b.Length) {
+			if (a.Length > b.Length)
+			{
 				return a.Contains(b);
-			} else {
+			}
+			else
+			{
 				return b.Contains(a);
 			}
 		}
